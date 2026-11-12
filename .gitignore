@@ -1,0 +1,4 @@
+node_modules/
+dist/
+*.log
+# .kiro/ must stay committed (Kiroween rule)

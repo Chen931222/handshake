@@ -1,0 +1,369 @@
+{
+  "pbtResults": {},
+  "executionHistory": {
+    "1. Project scaffold": [
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495310607
+      },
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495602536
+      }
+    ],
+    "1.1 Create package.json with TypeScript, Vite, Vitest, and fast-check as dev-dependencies; no runtime dependencies": [
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495314078
+      },
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495369944
+      }
+    ],
+    "1.2 Create tsconfig.json with strict mode, ESNext target, and bundler module resolution": [
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495373329
+      },
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495554653
+      }
+    ],
+    "1.3 Create vite.config.ts pointing at index.html as the entry point": [
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495376469
+      },
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495557673
+      }
+    ],
+    "1.4 Create vitest.config.ts with environment `node` (all code under test is pure; no jsdom dependency) and `testTimeout: 60000` (the noise tests run many ~12 s audio buffers)": [
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495379962
+      },
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495560981
+      }
+    ],
+    "1.5 Create a minimal index.html stub with a `<script type=\"module\" src=\"/src/main.ts\">` tag": [
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495571311
+      },
+      {
+        "executionId": "9be75dc4-50b2-4634-b2f7-fdc7f2ee5f34",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495602502
+      }
+    ],
+    "1.6 Verify: run `npm install` to confirm it exits cleanly, then `npx vitest run` to confirm it exits with \"no tests found\"": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495717564
+      }
+    ],
+    "2.1 Implement `src/modem/config.ts`: `ModemConfig` interface, `createConfig()`, and `defaultConfig` (48 000 Hz / 100 baud / mark 2 400 Hz / space 1 800 Hz)": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794495902221
+      },
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496013255
+      }
+    ],
+    "2. ModemConfig": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496013284
+      }
+    ],
+    "3.1 Implement `src/modem/modulator.ts`: `modulate(bytes, config): Float32Array` with continuous-phase FSK, MSB-first bit order": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496018141
+      },
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496038182
+      }
+    ],
+    "3. FSK Modulator": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496038210
+      }
+    ],
+    "4.1 Implement `src/modem/demodulator.ts`: `demodulateBits(samples, config): Uint8Array` (raw 0/1 bits) and `demodulate(samples, config): Uint8Array` (packed bytes) using per-symbol Goertzel filter": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496041681
+      },
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496067814
+      }
+    ],
+    "5.1 Implement `src/protocol/frame.ts`: `FailureReason` type, `DecodeResult` type, `encodeFrame(payload): Uint8Array`, and `decodeFrame(bytes): DecodeResult`": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496071057
+      },
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496100744
+      }
+    ],
+    "2.2 Write unit tests in `test/modem.test.ts` for `createConfig` validation": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496104927
+      },
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496503869
+      }
+    ],
+    "5.2 Write unit tests in `test/protocol.test.ts`": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496460638
+      },
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496525562
+      }
+    ],
+    "2.3 Write property test for `createConfig` (Property 5 and Property 6)": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496507339
+      }
+    ],
+    "3.2 Write unit tests in `test/modem.test.ts` for modulator output length and sample range": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496510542
+      }
+    ],
+    "3.3 Write property tests for modulator (Property 2 and Property 3)": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496514478
+      }
+    ],
+    "4.2 Write unit tests in `test/modem.test.ts` for demodulator": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496517708
+      }
+    ],
+    "4.3 Write property test for modem round-trip (Property 1) and demodulate output length (Property 4)": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496522016
+      }
+    ],
+    "4. FSK Demodulator": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496522043
+      }
+    ],
+    "5.3 Write property tests in `test/protocol.test.ts` (Properties 7, 8, 9)": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496529324
+      }
+    ],
+    "5. Protocol framing": [
+      {
+        "executionId": "9f62dfcf-4345-4ff8-b4fb-92110c576dff",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496529357
+      }
+    ],
+    "6.1 Implement `src/modem/receiver.ts`: `receive(samples, config): DecodeResult` with 8-offset bit-granularity sync search": [
+      {
+        "executionId": "494ebfd6-73d3-41c3-be86-f1b95dd694b7",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496580504
+      },
+      {
+        "executionId": "494ebfd6-73d3-41c3-be86-f1b95dd694b7",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497025294
+      }
+    ],
+    "6.2 Write unit tests in `test/receiver.test.ts` for the receiver (no dependency on the simulated channel, which is task 7)": [
+      {
+        "executionId": "494ebfd6-73d3-41c3-be86-f1b95dd694b7",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496584046
+      },
+      {
+        "executionId": "494ebfd6-73d3-41c3-be86-f1b95dd694b7",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497028941
+      }
+    ],
+    "7.1 Implement `src/channel/simulated.ts`: `simulateChannel(samples, options?): Float32Array` with gain jitter, clock-drift resampling, Box-Muller Gaussian noise, silence padding, and seedable `rng` option": [
+      {
+        "executionId": "494ebfd6-73d3-41c3-be86-f1b95dd694b7",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496587715
+      },
+      {
+        "executionId": "494ebfd6-73d3-41c3-be86-f1b95dd694b7",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497033062
+      }
+    ],
+    "7.2 Write unit tests and property test in `test/channel.test.ts`": [
+      {
+        "executionId": "494ebfd6-73d3-41c3-be86-f1b95dd694b7",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794496591233
+      },
+      {
+        "executionId": "494ebfd6-73d3-41c3-be86-f1b95dd694b7",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497036069
+      }
+    ],
+    "6. Receiver (frame acquisition)": [
+      {
+        "executionId": "494ebfd6-73d3-41c3-be86-f1b95dd694b7",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497028966
+      }
+    ],
+    "7. Simulated channel": [
+      {
+        "executionId": "494ebfd6-73d3-41c3-be86-f1b95dd694b7",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497036096
+      }
+    ],
+    "8. Checkpoint — ensure all unit and property tests pass": [
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497101107
+      }
+    ],
+    "9.1 Implement noise-resistance property test (Property 10) in `test/noise.test.ts`": [
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497104420
+      },
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497220182
+      }
+    ],
+    "9.2 Implement non-vacuity companion test (Req 8.4) in `test/noise.test.ts`": [
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497107628
+      },
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497223744
+      }
+    ],
+    "9.3 Implement SNR sweep report test (Req 10) in `test/noise.test.ts`": [
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497111101
+      },
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497227157
+      }
+    ],
+    "10.1 Implement `src/main.ts`: wire `TextEncoder` → `encodeFrame` → `modulate` → `simulateChannel` → `receive` on button click; compute UTF-8 byte count on every `input` event; display result, failure reason, SNR used, frame byte length, and simulated audio duration (frame bits ÷ baud)": [
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497114996
+      },
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497231655
+      }
+    ],
+    "10.2 Implement `index.html`: text input, live UTF-8 counter (n/140), SNR `<select>` (Infinity/30/20/10/5/0, default 20), \"Send (simulated)\" `<button>` disabled when count = 0 or > 140, result display area; layout via plain flex/grid in a `<style>` tag; no external CSS framework": [
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497118959
+      },
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497236409
+      }
+    ],
+    "9. Noise-resistance and SNR sweep tests": [
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497227182
+      }
+    ],
+    "10. Dev page": [
+      {
+        "executionId": "5ed0d965-424b-4e39-97dd-e9fb737ab8af",
+        "chatSessionId": "sess_658db44e-0edb-4d84-b95d-15a6d58551ed",
+        "timestamp": 1794497236437
+      }
+    ]
+  }
+}
