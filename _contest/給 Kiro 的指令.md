@@ -30,9 +30,23 @@ Kiro 會依序產生 requirements.md → design.md → tasks.md，每一份都�
 
 ---
 
+## Spec 2：真的出聲收音＋兩分頁示範（2026-11-12 只產 spec，剩約 15 credits）
+
+```
+Create a new spec named handshake-audio-slice-2 (read the steering docs and the slice-1 spec first; reuse modulate, receive, simulateChannel and defaultConfig unchanged).
+Scope:
+1. src/channel/audio-tx.ts: play a Float32Array through an AudioWorklet (never ScriptProcessorNode). Resample-free: build the ModemConfig from audioContext.sampleRate (44100 or 48000), keeping 100 baud and the 1800/2400 Hz tones, which give a whole number of cycles per symbol at both rates.
+2. src/channel/audio-rx.ts: getUserMedia with echoCancellation, noiseSuppression, autoGainControl all false; read track.getSettings() and report which of the three the browser actually honored. Capture through an AudioWorklet into a ring buffer sized for the longest frame plus one second; every 500 ms run receive() on the buffer; on ok, emit the payload once and clear the buffer. Handle permission denied and no-HTTPS with a visible message.
+3. src/channel/broadcast.ts: the simulated path for the two-tab demo. Tab A sends the modulated samples over BroadcastChannel; tab B passes them through simulateChannel with a user-chosen SNR and drift, then receive().
+4. Two-tab demo page: one page with a role switch (send / listen) and a path switch (acoustic / simulated). It shows the signal level, the decoded text or the failure reason, and how long the transmission took.
+5. A field-measurement page that appends one CSV row per attempt in the columns from structure.md and offers the file as a download. Never invent rows.
+Tests: the ring buffer, the 500 ms polling (with fake samples and fake timers), and the BroadcastChannel path (Node has BroadcastChannel) are unit-testable; Web Audio and getUserMedia are not, so isolate them behind small interfaces and list the manual checks in tasks.md.
+Keep requirements in EARS format. Generate requirements, design and tasks in one pass with no refinement sub-agents; credits are very limited.
+```
+
 ## 之後（等 4,000 credits）
 
-- Spec 2：AudioWorklet 真的出聲與收音＋兩個分頁的示範模式。
+- Spec 2 的 tasks：AudioWorklet 真的出聲與收音＋兩個分頁的示範模式。
 - Spec 3：降靈會介面（訊號品質＝靈的清晰度）。
 - Hooks：改 modem 參數就自動跑 PBT 與錯誤率報表（這是評分表 Technological Implementation 要看的東西，要由 Kiro 建）。
 - 實測：借手機量「型號 × 環境 × 錯誤率」，只記真的量到的數字。
