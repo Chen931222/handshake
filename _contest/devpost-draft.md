@@ -57,6 +57,6 @@ After the April 2024 Hualien earthquake, phone networks in Taiwan were jammed. P
 ## Submission fields
 
 - Category: Resurrection
-- Repo: [TODO: public GitHub URL]
-- Demo: [TODO: deployed URL]
+- Repo: https://github.com/Chen931222/handshake
+- Demo: https://handshake-azure-tau.vercel.app
 - Video (under 3 minutes, public YouTube; verified from the rules 2026-11-12): [TODO: URL]

@@ -14,6 +14,8 @@ It carries up to 140 bytes. That is about 140 English characters or 46 Chinese c
 
 ## Try it
 
+**Live: https://handshake-azure-tau.vercel.app** (open it twice, or press *Open listener*).
+
 ```bash
 npm install
 npm run dev
