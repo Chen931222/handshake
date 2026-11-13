@@ -124,7 +124,14 @@ describe("decodeFrame — unit tests (task 5.2)", () => {
     // Flip payload byte at offset 7
     const tampered = new Uint8Array(frame);
     tampered[7] = tampered[7]! ^ 0xff;
-    expect(decodeFrame(tampered)).toEqual({ ok: false, reason: "crc_mismatch" });
+    const r = decodeFrame(tampered);
+    expect(r.ok).toBe(false);
+    if (!r.ok) {
+      expect(r.reason).toBe("crc_mismatch");
+      // The broken bytes are reported as what arrived, never as the original message.
+      expect(Array.from(r.corrupt ?? [])).toEqual(Array.from(tampered.subarray(7, 12)));
+      expect(Array.from(r.corrupt ?? [])).not.toEqual(Array.from(payload));
+    }
   });
 
   it("never throws for any Uint8Array input", () => {

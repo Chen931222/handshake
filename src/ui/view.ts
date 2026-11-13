@@ -34,6 +34,7 @@ const els = {
   airSeconds: $("air-seconds"),
   airNote: $("air-note"),
   airtime: $("airtime"),
+  airKey: $("air-key"),
 };
 
 const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)");
@@ -47,6 +48,11 @@ export function setMode(role: "send" | "listen", path: "acoustic" | "simulated")
   els.composer.hidden = role !== "send";
   els.listener.hidden = role !== "listen";
   els.airtime.hidden = role !== "send";
+  if (els.planchette.dataset.state === "idle") {
+    // The sending tab never receives its own message; say where the answer will appear.
+    els.spirit.textContent =
+      role === "send" ? "The answer appears on the listening side." : "The board is waiting.";
+  }
   els.openListener.hidden = path !== "simulated";
   els.simControls.hidden = path !== "simulated";
   els.micControls.hidden = path !== "acoustic";
@@ -86,18 +92,14 @@ function drawTimeline(frameBytes: number): void {
     ["Message", payload],
     ["Check", 2],
   ];
+  const secs = (bytes: number) => `${((bytes * 8) / 100).toFixed(2)} s`;
+  // The bar carries no text: each segment's width is its duration and nothing else.
   els.timeline.replaceChildren(
     ...parts.map(([label, bytes]) => {
       const seg = document.createElement("div");
       seg.className = `seg seg-${label.toLowerCase()}`;
-      seg.style.flex = `${bytes} 1 0`; // basis 0: width is the duration only, never the label
-      seg.title = `${label}: ${bytes} byte${bytes === 1 ? "" : "s"}, ${((bytes * 8) / 100).toFixed(2)} s`;
-      const name = document.createElement("span");
-      name.textContent = label;
-      const dur = document.createElement("span");
-      dur.className = "dur";
-      dur.textContent = `${((bytes * 8) / 100).toFixed(2)} s`;
-      seg.append(name, dur);
+      seg.style.flex = `${bytes} 1 0`;
+      seg.title = `${label}: ${bytes} byte${bytes === 1 ? "" : "s"}, ${secs(bytes)}`;
       return seg;
     }),
   );
@@ -106,8 +108,20 @@ function drawTimeline(frameBytes: number): void {
   els.timeline.append(fill);
   els.timeline.setAttribute(
     "aria-label",
-    `Frame of ${frameBytes} bytes: ${payload} message bytes and 9 bytes of framing.`,
+    `Frame of ${frameBytes} bytes, drawn to scale: ${payload} message bytes and 9 bytes of framing.`,
   );
+  els.airKey.replaceChildren(
+    ...parts.map(([label, bytes]) => {
+      const row = document.createElement("div");
+      const dt = document.createElement("dt");
+      dt.textContent = label;
+      const dd = document.createElement("dd");
+      dd.textContent = secs(bytes);
+      row.append(dt, dd);
+      return row;
+    }),
+  );
+  els.airKey.hidden = false;
 }
 
 function setFill(fraction: number): void {
@@ -207,15 +221,26 @@ const REASONS: Record<string, string> = {
   crc_mismatch: "Checksum failed. The words arrived broken; Handshake will not show broken words as real ones.",
 };
 
-export function failed(reason: string, detail: string): void {
+export function failed(reason: string, detail: string, corrupt?: string, arrivedBytes?: number): void {
   if (revealTimer) clearInterval(revealTimer);
   els.planchette.dataset.state = "no";
   els.yes.classList.remove("lit");
   els.no.classList.add("lit");
   els.goodbye.classList.add("lit");
-  els.spirit.textContent = "The message did not come through.";
+  if (corrupt) {
+    // A broken message from the other side: what actually arrived, struck through and labelled.
+    const label = document.createElement("span");
+    label.className = "label";
+    label.textContent = "Not the message. This is what arrived:";
+    const broken = document.createElement("span");
+    broken.className = "broken";
+    broken.textContent = corrupt;
+    els.spirit.replaceChildren(label, broken);
+  } else {
+    els.spirit.textContent = "The message did not come through.";
+  }
   els.reason.textContent = REASONS[reason] ?? reason;
-  els.rxBytes.textContent = "0";
+  els.rxBytes.textContent = arrivedBytes ? `0 of ${arrivedBytes} accepted` : "0";
   els.rxDetail.textContent = detail;
 }
 

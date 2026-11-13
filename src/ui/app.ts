@@ -125,7 +125,7 @@ async function send(): Promise<void> {
 // ── Listening ──────────────────────────────────────────────────────────────
 function show(result: DecodeResult, detail: string): void {
   if (result.ok) view.received(dec.decode(result.payload), result.payload.length, detail);
-  else view.failed(result.reason, detail);
+  else view.failed(result.reason, detail, result.corrupt ? dec.decode(result.corrupt) : undefined, result.corrupt?.length);
 }
 
 function startSimulatedListen(): void {

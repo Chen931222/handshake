@@ -98,7 +98,7 @@ export function receive(samples: Float32Array, config: ModemConfig): DecodeResul
 
   // 8 evenly-spaced offsets within one symbol period (Req 12.3)
   const numOffsets = 8;
-  let bestFailure: "no_sync" | "bad_length" | "crc_mismatch" = "no_sync";
+  let bestFailure: Extract<DecodeResult, { ok: false }> = { ok: false, reason: "no_sync" };
 
   for (let oi = 0; oi < numOffsets; oi++) {
     const offset = Math.round((oi * samplesPerSymbol) / numOffsets);
@@ -134,8 +134,8 @@ export function receive(samples: Float32Array, config: ModemConfig): DecodeResul
       if (result.ok) return result;
 
       // Track most informative failure
-      if (failureRank(result.reason) > failureRank(bestFailure)) {
-        bestFailure = result.reason;
+      if (failureRank(result.reason) > failureRank(bestFailure.reason)) {
+        bestFailure = result;
       }
 
       // Advance past this match to find other potential sync positions
@@ -143,5 +143,5 @@ export function receive(samples: Float32Array, config: ModemConfig): DecodeResul
     }
   }
 
-  return { ok: false, reason: bestFailure };
+  return bestFailure;
 }

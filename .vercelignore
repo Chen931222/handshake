@@ -1,0 +1,7 @@
+node_modules
+.impeccable
+_contest
+test
+measurements
+.kiro
+*.log

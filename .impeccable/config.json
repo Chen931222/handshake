@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "flat-type-hierarchy",
+        "value": "*",
+        "files": [
+          "index.html"
+        ],
+        "createdAt": "2026-11-13T03:54:26.599Z",
+        "reason": "assistant decided, confirmed by impeccable-finish-reviewer: styles load via JS import (src/ui/app.ts imports ./app.css); rendered .brand h1 is 2.5rem and .air-head h2 1.5rem against 16px body"
+      }
+    ]
+  }
+}

@@ -1,0 +1,149 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-13T00:00:00+08:00",
+  "title": "Design System: Handshake",
+  "extensions": {
+    "colorMeta": {
+      "brass": { "role": "primary", "displayName": "Aged Brass", "canonical": "oklch(70.7% 0.123 79.6)", "tonalRamp": ["#230000", "#411600", "#643700", "#885900", "#ad7c14", "#d4a146", "#f8c46a", "#ffe58b"] },
+      "brass-soft": { "role": "primary", "displayName": "Brass Wash", "canonical": "rgb(201 151 58 / 0.22)" },
+      "ground": { "role": "neutral", "displayName": "Walnut Black", "canonical": "oklch(18.2% 0.013 66.9)", "tonalRamp": ["#0f0a06", "#28231d", "#47413b", "#68625c", "#8c857e", "#b1a9a2", "#d4ccc5", "#f5ede6"] },
+      "ground-raised": { "role": "neutral", "displayName": "Raised Walnut", "canonical": "oklch(21.1% 0.016 62.4)", "tonalRamp": ["#100a05", "#2a221c", "#49413a", "#6a615a", "#8d847d", "#b2a9a1", "#d6ccc3", "#f7ece4"] },
+      "ground-sunk": { "role": "neutral", "displayName": "Sunk Walnut", "canonical": "oklch(16.3% 0.011 67.2)", "tonalRamp": ["#0e0a07", "#28231f", "#46413c", "#67625d", "#8b857f", "#afaaa4", "#d3cdc7", "#f4ede7"] },
+      "ink": { "role": "neutral", "displayName": "Bone", "canonical": "oklch(92.2% 0.030 83.6)", "tonalRamp": ["#110a00", "#2b2312", "#4a4130", "#6c6250", "#8f8572", "#b4aa96", "#d7cdb8", "#f8edd8"] },
+      "ink-2": { "role": "neutral", "displayName": "Worn Bone", "canonical": "oklch(75.6% 0.038 82.1)", "tonalRamp": ["#130900", "#2d220d", "#4d412b", "#6e614b", "#92846c", "#b7a990", "#daccb2", "#fbedd2"] },
+      "ink-3": { "role": "neutral", "displayName": "Faded Bone", "canonical": "oklch(61.5% 0.031 79.3)", "tonalRamp": ["#120900", "#2c2212", "#4b412f", "#6d624f", "#908471", "#b6a995", "#d9ccb7", "#faedd8"] },
+      "line": { "role": "neutral", "displayName": "Hairline", "canonical": "rgb(239 228 207 / 0.14)" },
+      "line-strong": { "role": "neutral", "displayName": "Strong Hairline", "canonical": "rgb(239 228 207 / 0.28)" },
+      "no": { "role": "error", "displayName": "Signal Red", "canonical": "oklch(66.2% 0.136 33.1)", "tonalRamp": ["#310000", "#540000", "#7b1803", "#a23f2b", "#cb634e", "#f48871", "#ffab93", "#ffccb3"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Masthead page title. 2rem under 560px." },
+      "board-word": { "displayName": "Board word", "purpose": "YES and NO on the arc. 1.5rem under 560px." },
+      "spirit": { "displayName": "Spirit", "purpose": "The received message inside the lens, spelled letter by letter." },
+      "headline": { "displayName": "Headline", "purpose": "Visible section titles (On the air, Runs)." },
+      "goodbye": { "displayName": "GOOD BYE", "purpose": "The board's failure word, uppercase; used for this word only." },
+      "body": { "displayName": "Body", "purpose": "Running text and hints (hints 0.9375rem, max 62ch)." },
+      "input": { "displayName": "Input", "purpose": "Message textarea and number field." },
+      "button": { "displayName": "Button", "purpose": "All buttons; primary at weight 600." },
+      "label": { "displayName": "Label", "purpose": "Field labels, air-time key, in Worn Bone." },
+      "data-small": { "displayName": "Data small", "purpose": "Readout terms, scale captions, error text; tabular numerals." }
+    },
+    "shadows": [
+      { "name": "tab-underline", "value": "inset 0 -2px var(--brass)", "purpose": "Active segmented tab underline. Draws a line, not depth." },
+      { "name": "segment-tick", "value": "inset -1px 0 var(--line-strong)", "purpose": "Hairline tick between timeline segments without adding width." }
+    ],
+    "motion": [
+      { "name": "ease-out", "value": "cubic-bezier(0.16, 1, 0.3, 1)", "purpose": "The single easing for every transition." },
+      { "name": "control", "value": "160ms", "purpose": "Button and tab colour, background and border changes." },
+      { "name": "rim", "value": "400ms", "purpose": "Lens rim opacity, dash pattern and inner-ring offset following clarity." },
+      { "name": "board-word", "value": "600ms", "purpose": "YES / NO / GOOD BYE lighting." },
+      { "name": "breathe", "value": "3.2s ease-in-out infinite", "purpose": "Lens veil between Sunk and Raised Walnut while listening and idle." },
+      { "name": "spell", "value": "12-45ms per letter, ~1.4s total", "purpose": "Received message reveal. All motion off under prefers-reduced-motion." }
+    ],
+    "breakpoints": [
+      { "name": "narrow", "value": "560px" },
+      { "name": "column", "value": "780px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Bone-filled, one per view: Send, Start listening, Add row.",
+      "html": "<button class=\"ds-btn-primary\">Send</button>",
+      "css": ".ds-btn-primary { font: 600 1rem/1 system-ui, -apple-system, \"Segoe UI\", sans-serif; min-height: 44px; min-width: 140px; padding: 0 24px; border-radius: 4px; color: #16110c; background: #efe4cf; border: 1px solid #efe4cf; cursor: pointer; transition: background-color 160ms cubic-bezier(0.16, 1, 0.3, 1), border-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-primary:hover { background: #fbf3e2; border-color: #fbf3e2; } .ds-btn-primary:focus-visible { outline: 2px solid #c9973a; outline-offset: 3px; } .ds-btn-primary:disabled { cursor: not-allowed; color: #8f8370; background: transparent; border-color: rgb(239 228 207 / 0.14); }"
+    },
+    {
+      "name": "Quiet Button",
+      "kind": "button",
+      "refersTo": "button-quiet",
+      "description": "Outlined secondary action: Open listener, Download CSV.",
+      "html": "<button class=\"ds-btn-quiet\">Open listener</button>",
+      "css": ".ds-btn-quiet { font: 500 1rem/1 system-ui, -apple-system, \"Segoe UI\", sans-serif; min-height: 44px; padding: 0 24px; border-radius: 4px; color: #efe4cf; background: transparent; border: 1px solid rgb(239 228 207 / 0.28); cursor: pointer; transition: border-color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-btn-quiet:hover { border-color: #bcae95; } .ds-btn-quiet:focus-visible { outline: 2px solid #c9973a; outline-offset: 3px; }"
+    },
+    {
+      "name": "Message Field",
+      "kind": "input",
+      "refersTo": "text-input",
+      "description": "Sunk walnut textarea with brass caret and a tabular byte count below.",
+      "html": "<label class=\"ds-label\" for=\"ds-msg\">Message</label><textarea id=\"ds-msg\" class=\"ds-textarea\" rows=\"3\">I'm on the 3rd-floor stairwell. Leg injured.</textarea><p class=\"ds-meta\">44 / 140 bytes · 4.2 s of sound</p>",
+      "css": ".ds-label { display: block; margin-bottom: 8px; color: #bcae95; font: 0.875rem system-ui, sans-serif; } .ds-textarea { width: 100%; box-sizing: border-box; min-height: 6.5rem; resize: vertical; font: 1.125rem/1.45 system-ui, -apple-system, \"Segoe UI\", sans-serif; color: #efe4cf; background: #110d09; border: 1px solid rgb(239 228 207 / 0.28); border-radius: 4px; padding: 12px 16px; caret-color: #c9973a; } .ds-textarea:hover { border-color: #8f8370; } .ds-textarea:focus-visible { outline: 2px solid #c9973a; outline-offset: 3px; } .ds-meta { margin: 8px 0 0; color: #bcae95; font: 1rem system-ui, sans-serif; font-variant-numeric: tabular-nums; }"
+    },
+    {
+      "name": "Segmented Control",
+      "kind": "nav",
+      "refersTo": "segmented-tab",
+      "description": "Role and channel switch; the checked segment gets a 2px brass underline and no fill.",
+      "html": "<fieldset class=\"ds-seg\"><label><input type=\"radio\" name=\"ds-role\" checked><span>Send</span></label><label><input type=\"radio\" name=\"ds-role\"><span>Listen</span></label></fieldset>",
+      "css": ".ds-seg { display: inline-flex; margin: 0; padding: 2px; border: 1px solid rgb(239 228 207 / 0.28); border-radius: 4px; } .ds-seg label { position: relative; cursor: pointer; } .ds-seg input { position: absolute; inset: 0; margin: 0; opacity: 0; cursor: pointer; } .ds-seg span { display: block; padding: 8px 14px; min-height: 40px; box-sizing: border-box; line-height: 24px; font: 1rem/24px system-ui, sans-serif; color: #bcae95; border-radius: 2px; transition: color 160ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-seg label:hover span { color: #efe4cf; } .ds-seg input:checked + span { color: #efe4cf; box-shadow: inset 0 -2px #c9973a; } .ds-seg input:focus-visible + span { outline: 2px solid #c9973a; outline-offset: 2px; }"
+    },
+    {
+      "name": "Lens",
+      "kind": "custom",
+      "refersTo": "lens",
+      "description": "The planchette window; clarity drives rim opacity, dash pattern and inner-ring register. Shown at clarity 0.4.",
+      "html": "<div class=\"ds-lens\" style=\"--clarity:0.4\"><svg class=\"ds-rim\" viewBox=\"0 0 200 200\" aria-hidden=\"true\"><circle cx=\"100\" cy=\"100\" r=\"96\"/><circle cx=\"100\" cy=\"100\" r=\"88\"/></svg><div class=\"ds-veil\"></div><p class=\"ds-spirit\">I'm on the 3rd-floor stairwell.</p></div>",
+      "css": ".ds-lens { position: relative; width: 280px; aspect-ratio: 1; display: grid; place-items: center; } .ds-rim { position: absolute; inset: 0; width: 100%; height: 100%; fill: none; stroke: #c9973a; opacity: calc(0.35 + 0.65 * var(--clarity)); transition: opacity 400ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-rim circle { stroke-dasharray: calc(0.6 + 4.4 * var(--clarity)) calc(4.4 * (1 - var(--clarity))); } .ds-rim circle:first-child { stroke-width: 2.5; } .ds-rim circle:last-child { stroke-width: 0.75; opacity: 0.6; transform: translate(calc((1 - var(--clarity)) * 4px), calc((1 - var(--clarity)) * -3px)); } .ds-veil { position: absolute; inset: 9%; border-radius: 50%; background: #110d09; } .ds-spirit { position: relative; width: 72%; margin: 0; text-align: center; font: 400 1.5rem/1.3 \"IM Fell English\", \"Iowan Old Style\", Georgia, serif; color: #efe4cf; text-wrap: balance; }"
+    },
+    {
+      "name": "Broken Message",
+      "kind": "custom",
+      "refersTo": "spirit-broken",
+      "description": "Checksum failure: the arrived bytes struck through under a sans label, with the real reason below.",
+      "html": "<p class=\"ds-spirit\"><span class=\"ds-label-sm\">Not the message. This is what arrived:</span><span class=\"ds-broken\">I'm on the 3râ-floor st#irwell.</span></p><p class=\"ds-reason\">Checksum failed. The words arrived broken; Handshake will not show broken words as real ones.</p>",
+      "css": ".ds-spirit { margin: 0; text-align: center; font: 400 1.5rem/1.3 \"IM Fell English\", \"Iowan Old Style\", Georgia, serif; color: #efe4cf; } .ds-label-sm { display: block; margin-bottom: 8px; font: 500 0.8125rem/1.4 system-ui, sans-serif; color: #bcae95; } .ds-broken { color: #8f8370; text-decoration: line-through; text-decoration-color: #bcae95; } .ds-reason { margin: 12px 0 0; text-align: center; color: #efe4cf; font: 0.9375rem/1.45 system-ui, sans-serif; }"
+    },
+    {
+      "name": "Board Words",
+      "kind": "custom",
+      "refersTo": "board-arc",
+      "description": "YES / NO / GOOD BYE: unlit in faded bone; failure lights NO and GOOD BYE in bone. Shown failed.",
+      "html": "<div class=\"ds-arc\"><span class=\"ds-word\">Yes</span><span class=\"ds-word ds-lit\">No</span></div><p class=\"ds-word ds-goodbye ds-lit\">Good bye</p>",
+      "css": ".ds-arc { display: flex; justify-content: space-between; width: 320px; } .ds-word { font: 400 2rem/1 \"IM Fell English\", \"Iowan Old Style\", Georgia, serif; color: #8f8370; opacity: 0.8; transition: color 600ms cubic-bezier(0.16, 1, 0.3, 1), opacity 600ms cubic-bezier(0.16, 1, 0.3, 1); } .ds-lit { color: #efe4cf; opacity: 1; } .ds-arc .ds-word.ds-yes-lit { color: #c9973a; opacity: 1; } .ds-goodbye { margin: 24px 0 0; width: 320px; text-align: center; font-size: 1.5rem; letter-spacing: 0.14em; text-transform: uppercase; }"
+    },
+    {
+      "name": "Air-time Timeline",
+      "kind": "custom",
+      "refersTo": "timeline",
+      "description": "Frame drawn to scale, no text in the bar, brass fill advancing, key with seconds below.",
+      "html": "<div class=\"ds-tl\"><div class=\"ds-seg-b\" style=\"flex:4 1 0\"></div><div class=\"ds-seg-b\" style=\"flex:2 1 0\"></div><div class=\"ds-seg-b\" style=\"flex:1 1 0\"></div><div class=\"ds-seg-b ds-msg\" style=\"flex:44 1 0\"></div><div class=\"ds-seg-b\" style=\"flex:2 1 0\"></div><div class=\"ds-fill\" style=\"transform:scaleX(0.6)\"></div></div><dl class=\"ds-key\"><div><dt>Preamble</dt><dd>0.32 s</dd></div><div><dt>Sync</dt><dd>0.16 s</dd></div><div><dt>Length</dt><dd>0.08 s</dd></div><div><dt>Message</dt><dd>3.52 s</dd></div><div><dt>Check</dt><dd>0.16 s</dd></div></dl>",
+      "css": ".ds-tl { position: relative; display: flex; min-height: 28px; border: 1px solid rgb(239 228 207 / 0.28); border-radius: 4px; overflow: hidden; background: #110d09; } .ds-seg-b { position: relative; z-index: 1; min-width: 0; box-shadow: inset -1px 0 rgb(239 228 207 / 0.28); } .ds-seg-b:last-of-type { box-shadow: none; } .ds-msg { background: rgb(239 228 207 / 0.05); } .ds-fill { position: absolute; inset: 0; background: rgb(201 151 58 / 0.22); border-right: 2px solid #c9973a; transform-origin: left; } .ds-key { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 4px 24px; margin: 12px 0 0; font: 0.875rem system-ui, sans-serif; } .ds-key div { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid rgb(239 228 207 / 0.14); padding: 4px 0; } .ds-key dt { color: #bcae95; } .ds-key dd { margin: 0; color: #efe4cf; font-variant-numeric: tabular-nums; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Talking Board",
+    "overview": "Handshake is a séance board laid on a walnut table at night: a near-black warm ground, bone ink, and one aged-brass mark that only ever means \"the signal, now\". The board's words (YES, NO, GOOD BYE), the received message and the page titles are cut in an engraved serif; everything the user operates or measures is set in the system sans with tabular figures. The theme carries information, never decoration: the lens rim is the clarity meter, the timeline is the frame drawn to its real duration, and failure is a struck-through broken message with its real reason.\n\nThe page is a single 780px column, dense in the controls and generous around the board. Surfaces are flat; depth comes from three nearly identical walnut tones and hairlines of bone at 14% and 28%. Nothing glows, nothing blurs, nothing is textured. Degradation is printed, not filtered: noise breaks the rim's ink into dashes and knocks the inner ring out of register, like a misaligned press.\n\nVisual rejections confirmed by the build and the finish review: no wood texture, no glow halos, no blur on the signal, no green/red result card.",
+    "keyCharacteristics": [
+      "Walnut ground, bone ink, one brass accent for the live signal.",
+      "Engraved serif for the board's voice; system sans for controls and data; tabular numerals for every measurement.",
+      "Signal quality expressed as print register (dashed ink, offset inner ring), never as blur or glow.",
+      "Failure lights NO and GOOD BYE in bone, not red.",
+      "Flat surfaces, hairline borders, 4px corners."
+    ],
+    "rules": [
+      { "name": "The One Brass Rule", "body": "Brass means the live signal or the user's current focus point. It is never a surface, a heading colour, a decorative rule, or a second brand colour.", "section": "colors" },
+      { "name": "The Bone Failure Rule", "body": "A failed decode lights NO and GOOD BYE in bone. Red is not the failure colour on the board; it is reserved for a form the user must correct and for a microphone the browser refused to configure.", "section": "colors" },
+      { "name": "The Two Voices Rule", "body": "The serif is the board talking (title, board words, received message, section titles). The sans is the instrument (controls, labels, data). Do not cross them.", "section": "typography" },
+      { "name": "The Tabular Rule", "body": "Every measurement (bytes, seconds, dB, ppm, clarity, table numbers) uses tabular numerals; numeric table columns align right.", "section": "typography" },
+      { "name": "The Print Register Rule", "body": "Signal quality is shown the way a press shows it: at low clarity the rim ink breaks into dashes, fades to 35% opacity, and the inner ring slips up to 4px out of register. No blur, no glow, no text-shadow, and the decoded text and failure reason are never degraded.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep brass to the live signal (rim, active tab underline, timeline fill, slider, clarity number, lit YES) and the focus/caret/selection affordances.",
+      "Do show degraded signal as broken ink and mis-registration on the rim: dashes, lower opacity, offset inner ring.",
+      "Do light NO and GOOD BYE in Bone on failure and print the real reason in Bone below the message.",
+      "Do show corrupt bytes struck through under a \"Not the message\" label, never as if they were the message.",
+      "Do draw durations to scale and put numbers in a key or head, in tabular figures, right-aligned.",
+      "Do keep the decoded text and failure reason at full contrast in every signal state.",
+      "Do honour reduced motion: no spelling animation, no breathing, no transitions."
+    ],
+    "donts": [
+      "Don't blur, glow, or text-shadow anything to express signal quality.",
+      "Don't use Signal Red for decode failure; it is for form validation and the mic-constraint warning only.",
+      "Don't add wood grain or any texture to the walnut ground.",
+      "Don't set controls, labels or numbers in IM Fell English, or the board's words in the sans.",
+      "Don't label the drawn timeline segments; once a frame is drawn the bar carries no text (the empty track's one-line prompt is the only text it ever holds).",
+      "Don't add drop shadows; depth is tonal."
+    ]
+  }
+}

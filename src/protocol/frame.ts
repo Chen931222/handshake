@@ -16,7 +16,12 @@ export type FailureReason = "no_sync" | "bad_length" | "crc_mismatch";
 
 export type DecodeResult =
   | { ok: true; payload: Uint8Array }
-  | { ok: false; reason: FailureReason };
+  | {
+      ok: false;
+      reason: FailureReason;
+      /** On crc_mismatch only: the bytes that arrived. Known to be wrong; never show them as the message. */
+      corrupt?: Uint8Array;
+    };
 
 // Fixed frame constants
 const PREAMBLE = new Uint8Array([0xaa, 0x55, 0xaa, 0x55]);
@@ -131,7 +136,7 @@ export function decodeFrame(bytes: Uint8Array): DecodeResult {
   const storedCrc = ((bytes[payloadEnd]! << 8) | bytes[payloadEnd + 1]!) >>> 0;
 
   if (computedCrc !== storedCrc) {
-    return { ok: false, reason: "crc_mismatch" };
+    return { ok: false, reason: "crc_mismatch", corrupt: bytes.slice(payloadStart, payloadEnd) };
   }
 
   return { ok: true, payload: bytes.slice(payloadStart, payloadEnd) };
