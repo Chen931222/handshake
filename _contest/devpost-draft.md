@@ -37,6 +37,7 @@ After the April 2024 Hualien earthquake, phone networks in Taiwan were jammed. P
 - 94 automated tests, most of them fast-check properties. The core one: under any noise, the decoder returns the exact message or a failure, never different data.
 - Measured on the simulated channel: 50 of 50 messages decode down to −10 dB SNR, 16 of 50 at −15 dB, 0 of 50 at −20 dB.
 - Verified in a real browser through the full Web Audio path (worklet out → worklet in) at both 48 kHz and 44.1 kHz.
+- First real over-the-air test on one desktop failed (0 of 10 at 100 baud): bits arrived with 2–9% errors because the speaker was too quiet at the mic. The checksum rejected every damaged frame. [TODO: replace with the phone results and the error-correction slice.]
 
 ## What we learned
 
