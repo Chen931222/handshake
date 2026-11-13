@@ -47,8 +47,8 @@ After the April 2024 Hualien earthquake, 172 mobile base stations went offline, 
 
 ## What's next
 
-- Real phone tests across devices and rooms, logged in the field page. [TODO: replace with the measured table once it exists.]
-- Real phone tests across devices and rooms, logged in the field page.
+- Phone tests across devices and rooms, logged in the field page (one desktop and one room so far). [TODO: replace with the measured table once it exists.]
+- Phone tests across devices and rooms, logged in the field page (one desktop and one room so far).
 - GPS and contact-card payloads.
 
 ## Honest limits
