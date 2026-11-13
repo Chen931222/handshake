@@ -3,7 +3,7 @@
 Handshake moves short text between two phones using sound, with no network at all. It works with no Wi-Fi, no cell signal, and no pairing. It is a 1960s acoustic modem rebuilt in the browser.
 
 ## Who it is for
-- People whose network is down or overloaded but who are standing next to someone. Examples: after an earthquake when cell towers are jammed, or in a basement with no signal. The case we design around is the 2024 Hualien earthquake in Taiwan, when messaging was congested.
+- People whose network is down or overloaded but who are standing next to someone. Examples: after an earthquake when cell towers lose power, or in a basement with no signal. The case we design around is the April 2024 Hualien earthquake, when 172 mobile base stations went offline, mostly in Hualien and Yilan (NCC via CNA, 2024-04-03); most were restored the same day.
 - It is not for long-distance messaging. It works phone to phone, about 0.5 to 3 m apart.
 
 ## What it sends

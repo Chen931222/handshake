@@ -8,7 +8,7 @@ Built for Kiroween 2026, category **Resurrection**.
 
 ## Why
 
-After the 2024 Hualien earthquake, phone networks in Taiwan were jammed. People standing next to each other could not pass a message. Handshake is for that gap: two devices, 0.5 to 3 m apart, nothing else.
+After the April 2024 Hualien earthquake, 172 mobile base stations went offline, most of them in Hualien and Yilan (National Communications Commission, via [CNA, 2024-04-03](https://www.cna.com.tw/news/ahel/202404030090.aspx)); most were back the same day. Where the towers are down, two people standing a metre apart cannot send each other a text. Handshake is for that gap: two devices, 0.5 to 3 m apart, nothing else.
 
 It carries up to 140 bytes. That is about 140 English characters or 46 Chinese characters, enough for "I'm on the 3rd-floor stairwell, leg injured" and a position.
 

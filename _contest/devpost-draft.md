@@ -8,7 +8,7 @@ A 1960s acoustic modem, raised in the browser: send a short message phone to pho
 
 ## Inspiration
 
-After the April 2024 Hualien earthquake, phone networks in Taiwan were jammed. People standing a metre apart could not pass a message. The oldest trick in networking, two machines whistling at each other over a phone line, needs no network at all. Handshake brings that dead technology back for that gap.
+After the April 2024 Hualien earthquake, 172 mobile base stations went offline, most of them in Hualien and Yilan (National Communications Commission, via [CNA, 2024-04-03](https://www.cna.com.tw/news/ahel/202404030090.aspx)); most were back the same day. Where the towers are down, two people standing a metre apart cannot send each other a text. The oldest trick in networking, two machines whistling at each other over a phone line, needs no network at all. Handshake brings that dead technology back for that gap.
 
 ## What it does
 

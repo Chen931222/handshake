@@ -9,7 +9,7 @@ web
 ## Users
 
 - **Primary (confirmed 2026-11-13): Kiroween hackathon judges.** One laptop, one or two browser tabs, a few minutes, possibly a noisy room. Their job is to see that data really travels by sound, judge how well it is built, and decide whether it is honest about its limits.
-- **The story the product is built around (from steering):** two people standing 0.5–3 m apart whose network is down or jammed, for example after the 2024 Hualien earthquake. They need to pass a short message, a GPS position or an emergency contact card phone to phone. This audience shapes the content and constraints, not the first screen's layout.
+- **The story the product is built around (from steering):** two people standing 0.5–3 m apart whose network is down, for example after the April 2024 Hualien earthquake (172 mobile base stations offline, mostly in Hualien and Yilan; NCC via CNA). They need to pass a short message, a GPS position or an emergency contact card phone to phone. This audience shapes the content and constraints, not the first screen's layout.
 
 ## Product Purpose
 
