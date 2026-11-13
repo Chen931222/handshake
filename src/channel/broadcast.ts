@@ -8,7 +8,8 @@
 
 import { encodeFrame, type DecodeResult } from "../protocol/frame.js";
 import { modulate } from "../modem/modulator.js";
-import { receive } from "../modem/receiver.js";
+import { receiveAny, type FrameMode } from "../modem/any-receiver.js";
+import { encodeRobustFrame } from "../protocol/robust-frame.js";
 import { toneClarity } from "../modem/clarity.js";
 import { simulateChannel, type ChannelOptions } from "./simulated.js";
 import type { ModemConfig } from "../modem/config.js";
@@ -18,6 +19,8 @@ export const DEFAULT_CHANNEL_NAME = "handshake";
 export interface BroadcastSendOptions {
   config: ModemConfig;
   channelName?: string;
+  /** Robust mode: FEC-coded frame, twice the sound, survives more noise. */
+  robust?: boolean;
   /** Wall clock, injectable for tests. */
   now?: () => number;
 }
@@ -36,6 +39,8 @@ export interface BroadcastResult {
   audioSeconds: number;
   /** Tone share of the impaired samples this tab actually decoded, 0..1. */
   clarity: number;
+  /** Which frame format was decoded (or failed). */
+  mode: FrameMode;
 }
 
 interface WireMessage {
@@ -51,7 +56,8 @@ function requireBroadcastChannel(): void {
 
 export function broadcastSend(payload: Uint8Array, options: BroadcastSendOptions): number {
   requireBroadcastChannel();
-  const samples = modulate(encodeFrame(payload), options.config);
+  const frame = options.robust ? encodeRobustFrame(payload) : encodeFrame(payload);
+  const samples = modulate(frame, options.config);
   const channel = new BroadcastChannel(options.channelName ?? DEFAULT_CHANNEL_NAME);
   const msg: WireMessage = { samples: samples.buffer as ArrayBuffer, sentAt: (options.now ?? Date.now)() };
   channel.postMessage(msg);
@@ -71,8 +77,10 @@ export function broadcastListen(
     if (!active) return;
     const samples = new Float32Array(e.data.samples);
     const impaired = simulateChannel(samples, options.channelOptions ?? {});
+    const any = receiveAny(impaired, options.config);
     onResult({
-      result: receive(impaired, options.config),
+      result: any.result,
+      mode: any.mode,
       sentAt: e.data.sentAt,
       audioSeconds: samples.length / options.config.sampleRate,
       clarity: toneClarity(impaired, options.config),

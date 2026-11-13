@@ -125,3 +125,24 @@ export function demodulate(
   validateConfig(config);
   return packBits(demodulateBits(samples, config));
 }
+
+/**
+ * Soft demodulation (spec handshake-fec-slice-3): one value per symbol,
+ * (markEnergy − spaceEnergy) / (markEnergy + spaceEnergy) in [−1, 1].
+ * Positive means "1" (mark). The ratio is scale-free, so loud and quiet symbols weigh by how
+ * clearly they lean, not by how loud they are. 0 means no information (silence or a tie).
+ */
+export function demodulateSoft(samples: Float32Array, config: ModemConfig): Float32Array {
+  validateConfig(config);
+  const { sampleRate, markFrequency, spaceFrequency, samplesPerSymbol } = config;
+  const n = Math.floor(samples.length / samplesPerSymbol);
+  const out = new Float32Array(n);
+  for (let i = 0; i < n; i++) {
+    const offset = i * samplesPerSymbol;
+    const m = goertzelEnergy(samples, offset, samplesPerSymbol, markFrequency, sampleRate);
+    const s = goertzelEnergy(samples, offset, samplesPerSymbol, spaceFrequency, sampleRate);
+    const total = m + s;
+    out[i] = total > 0 ? (m - s) / total : 0;
+  }
+  return out;
+}

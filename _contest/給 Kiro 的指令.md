@@ -50,3 +50,17 @@ Keep requirements in EARS format. Generate requirements, design and tasks in one
 - Spec 3：降靈會介面（訊號品質＝靈的清晰度）。
 - Hooks：改 modem 參數就自動跑 PBT 與錯誤率報表（這是評分表 Technological Implementation 要看的東西，要由 Kiro 建）。
 - 實測：借手機量「型號 × 環境 × 錯誤率」，只記真的量到的數字。
+
+## Spec 3：錯誤更正＋慢速穩健模式（2026-11-13，剩約 6.3 credits，只產 spec）
+
+```
+Create a new spec named handshake-fec-slice-3. Read the steering docs and the two existing specs first; reuse modulate, demodulateBits, receive, encodeFrame/decodeFrame.
+Why: the first real over-the-air test (desktop speaker to USB mic) failed: 0/10 frames at 100 baud. Aligning received audio with the transmitted waveform measured raw bit error rates of 16-19% at 100 baud, 5-7% at 50 baud and 0.6-7.7% at 25 baud, scattered (noise-limited, not echo). CRC rejected every damaged frame.
+Scope:
+1. src/protocol/fec.ts: rate-1/2 convolutional code, constraint length 7 (generators 171/133 octal), with a soft-decision Viterbi decoder that takes per-bit confidences (mark energy minus space energy, normalized). Tail-terminated.
+2. A block interleaver over the coded bits so a burst becomes scattered single errors.
+3. src/modem/demodulator.ts: add demodulateSoft() returning per-bit soft values; keep demodulateBits unchanged.
+4. A "robust" mode: frame header (preamble + sync) stays uncoded so acquisition is unchanged; length + payload + CRC are FEC-coded and interleaved; baud selectable 100 / 50 / 25. Normal mode stays bit-for-bit compatible with slice 1.
+5. Tests: round-trip properties for FEC alone and for the full robust pipeline; a property that the decoder never returns wrong data that passes CRC; an SNR sweep comparing normal vs robust at equal air time.
+EARS requirements. Requirements, design and tasks in one pass, concise, no refinement sub-agents, no shell commands (the terminal cannot start on this machine; the spec folder will already exist).
+```

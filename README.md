@@ -31,7 +31,23 @@ On the simulated channel (white noise over 0–24 kHz, random gain 0.8–1.2, cl
 
 | SNR (dB) | 30 | 20 | 10 | 5 | 0 | −5 | −10 | −15 | −20 |
 |---|---|---|---|---|---|---|---|---|---|
-| Decoded | 50/50 | 50/50 | 50/50 | 50/50 | 50/50 | 50/50 | 50/50 | 16/50 | 0/50 |
+| Decoded | 50/50 | 50/50 | 50/50 | 50/50 | 50/50 | 50/50 | 50/50 | 8/50 | 0/50 |
+
+(Corrected 2026-11-13: an earlier version of this table said 16/50 at −15 dB. The test's noise generator was seeded with consecutive integers and gave correlated noise across trials; with an independent generator it is 8/50.)
+
+### Error correction (robust mode)
+
+Ticking *Error correction* sends a rate-1/2 convolutional code (constraint length 7, generators 171/133) with an interleaver, decoded by soft-decision Viterbi. It doubles the sound. Every listener tries both formats, so only the sender chooses. Both decoders accept a sync pattern with up to 2 wrong bits out of 24; the CRC still decides what is accepted.
+
+Simulated channel, same message, 100 trials per cell (`test/fec.test.ts` and a one-off run):
+
+| SNR (dB) | normal, 100 baud (1× sound) | normal, 50 baud (2× sound) | robust, 100 baud (2× sound) |
+|---|---|---|---|
+| −15 | 17/100 | 87/100 | 100/100 |
+| −16.5 | 1/100 | 58/100 | 97/100 |
+| −18 | 0/100 | 11/100 | 62/100 |
+
+At equal sound, coding beats simply slowing down by about 3 dB. With an exact 24-bit sync match it did not: the uncoded header broke first. In the two-tab demo at −16 dB, 6 of 6 robust messages arrived and 0 of 6 normal ones.
 
 Why it survives 0 dB: each bit is judged by the energy in a ~100 Hz Goertzel bin over 480 samples, about 24 dB of processing gain against noise spread over 24 kHz.
 

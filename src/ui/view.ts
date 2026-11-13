@@ -83,40 +83,33 @@ export function setByteCount(n: number, max: number, seconds: number): void {
 }
 
 // ── Air time ───────────────────────────────────────────────────────────────
-function drawTimeline(frameBytes: number): void {
-  const payload = frameBytes - 9;
-  const parts: Array<[string, number]> = [
-    ["Preamble", 4],
-    ["Sync", 2],
-    ["Length", 1],
-    ["Message", payload],
-    ["Check", 2],
-  ];
-  const secs = (bytes: number) => `${((bytes * 8) / 100).toFixed(2)} s`;
+/** One part of a frame on the air: a label and its length in bits. */
+export type AirPart = [label: string, bits: number];
+
+function drawTimeline(parts: AirPart[], baud: number): void {
+  const secs = (bits: number) => `${(bits / baud).toFixed(2)} s`;
+  const total = parts.reduce((s, [, b]) => s + b, 0);
   // The bar carries no text: each segment's width is its duration and nothing else.
   els.timeline.replaceChildren(
-    ...parts.map(([label, bytes]) => {
+    ...parts.map(([label, bits], i) => {
       const seg = document.createElement("div");
-      seg.className = `seg seg-${label.toLowerCase()}`;
-      seg.style.flex = `${bytes} 1 0`;
-      seg.title = `${label}: ${bytes} byte${bytes === 1 ? "" : "s"}, ${secs(bytes)}`;
+      seg.className = `seg seg-${i}${/message/i.test(label) ? " seg-message" : ""}`;
+      seg.style.flex = `${bits} 1 0`;
+      seg.title = `${label}: ${bits} bits, ${secs(bits)}`;
       return seg;
     }),
   );
   const fill = document.createElement("div");
   fill.className = "fill";
   els.timeline.append(fill);
-  els.timeline.setAttribute(
-    "aria-label",
-    `Frame of ${frameBytes} bytes, drawn to scale: ${payload} message bytes and 9 bytes of framing.`,
-  );
+  els.timeline.setAttribute("aria-label", `Frame of ${total} bits at ${baud} baud, drawn to scale.`);
   els.airKey.replaceChildren(
-    ...parts.map(([label, bytes]) => {
+    ...parts.map(([label, bits]) => {
       const row = document.createElement("div");
       const dt = document.createElement("dt");
       dt.textContent = label;
       const dd = document.createElement("dd");
-      dd.textContent = secs(bytes);
+      dd.textContent = secs(bits);
       row.append(dt, dd);
       return row;
     }),
@@ -129,8 +122,8 @@ function setFill(fraction: number): void {
   if (fill) fill.style.transform = `scaleX(${Math.min(1, Math.max(0, fraction))})`;
 }
 
-export function startTransmission(frameBytes: number, seconds: number): void {
-  drawTimeline(frameBytes);
+export function startTransmission(parts: AirPart[], baud: number, seconds: number): void {
+  drawTimeline(parts, baud);
   els.airSeconds.textContent = fmtSeconds(seconds);
   els.airNote.textContent = "Playing through the speaker now.";
   els.timeline.dataset.live = "true";
@@ -151,8 +144,8 @@ export function endTransmission(note: string): void {
   els.airNote.textContent = note;
 }
 
-export function flashTransmission(frameBytes: number, seconds: number, note: string): void {
-  drawTimeline(frameBytes);
+export function flashTransmission(parts: AirPart[], baud: number, seconds: number, note: string): void {
+  drawTimeline(parts, baud);
   els.airSeconds.textContent = fmtSeconds(seconds);
   setFill(1);
   els.timeline.dataset.live = "false";

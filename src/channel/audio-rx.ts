@@ -6,7 +6,8 @@
  * Requirements (slice 2): 1.1, 1.4, 3.0–3.11, 8.2, 8.4
  */
 
-import { receive } from "../modem/receiver.js";
+import { receiveAny, type FrameMode } from "../modem/any-receiver.js";
+import { robustAirSeconds } from "../protocol/robust-frame.js";
 import type { ModemConfig } from "../modem/config.js";
 import { RingBuffer } from "../util/ring-buffer.js";
 import { configForSampleRate, rxBufferCapacity } from "./rate-config.js";
@@ -29,7 +30,7 @@ export type ConstraintReport = Record<
 >;
 
 export interface RxEventMap {
-  payload: { payload: Uint8Array; frameSeconds: number };
+  payload: { payload: Uint8Array; frameSeconds: number; mode: FrameMode };
   error: { reason: string };
   "constraint-report": ConstraintReport;
   /** rms of the latest block; clarity = tone share over the last 4 symbols, 0..1 */
@@ -151,12 +152,13 @@ export class AudioRx {
   poll(): void {
     if (!this.running || !this.buffer || !this.config) return;
     if (this.buffer.length === 0) return;
-    const result = receive(this.buffer.read(), this.config);
+    const { result, mode } = receiveAny(this.buffer.read(), this.config);
     if (result.ok) {
-      const frameBytes = result.payload.length + 9;
+      const n = result.payload.length;
       this.emit("payload", {
         payload: result.payload,
-        frameSeconds: (frameBytes * 8) / this.config.baudRate,
+        frameSeconds: mode === "robust" ? robustAirSeconds(n, this.config) : ((n + 9) * 8) / this.config.baudRate,
+        mode,
       });
       this.buffer.clear();
     }

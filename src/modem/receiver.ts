@@ -70,26 +70,32 @@ function packBitsToBytes(bits: Uint8Array, startBit: number): Uint8Array {
  * Finds the first bit index >= startSearch where bits[i..i+SYNC_LEN] matches SYNC_PATTERN_BITS.
  * Returns -1 if not found.
  */
-function findSyncBits(bits: Uint8Array, startSearch: number): number {
+function findSyncBits(bits: Uint8Array, startSearch: number, maxErrors = 0): number {
   const limit = bits.length - SYNC_LEN;
   for (let i = startSearch; i <= limit; i++) {
-    let match = true;
+    let errors = 0;
     for (let j = 0; j < SYNC_LEN; j++) {
-      if (bits[i + j] !== SYNC_PATTERN_BITS[j]) {
-        match = false;
-        break;
-      }
+      if (bits[i + j] !== SYNC_PATTERN_BITS[j] && ++errors > maxErrors) break;
     }
-    if (match) return i;
+    if (errors <= maxErrors) return i;
   }
   return -1;
+}
+
+export interface ReceiveOptions {
+  /**
+   * Mismatched bits tolerated in the 24-bit sync pattern (default 0). On a noisy air channel an
+   * exact match is the first thing to fail; a tolerant match only proposes a start position,
+   * and the CRC still decides whether anything is accepted.
+   */
+  maxSyncErrors?: number;
 }
 
 /**
  * Receives a frame from an un-aligned sample stream.
  * Returns DecodeResult — never throws.
  */
-export function receive(samples: Float32Array, config: ModemConfig): DecodeResult {
+export function receive(samples: Float32Array, config: ModemConfig, options: ReceiveOptions = {}): DecodeResult {
   if (samples.length === 0) {
     return { ok: false, reason: "no_sync" };
   }
@@ -115,7 +121,7 @@ export function receive(samples: Float32Array, config: ModemConfig): DecodeResul
     // Search for the 24-bit sync pattern at every bit position
     let searchFrom = 0;
     while (true) {
-      const syncBitPos = findSyncBits(bits, searchFrom);
+      const syncBitPos = findSyncBits(bits, searchFrom, options.maxSyncErrors ?? 0);
       if (syncBitPos === -1) break;
 
       // The sync word [0x12, 0x34] starts 8 bits after the start of the 24-bit pattern

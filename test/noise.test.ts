@@ -22,10 +22,15 @@ const enc = new TextEncoder();
 
 // ── Seeded LCG (same as channel.test.ts, inlined to avoid cross-file dep) ───
 function makeLcg(seed: number): () => number {
-  let s = seed >>> 0;
+  // mulberry32 (2026-11-13): an LCG seeded with consecutive integers gave correlated noise
+  // across trials, so a sweep's 50 trials were not independent.
+  let a = Math.round(seed) >>> 0;
   return () => {
-    s = (Math.imul(1664525, s) + 1013904223) >>> 0;
-    return s / 0x100000000;
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
 

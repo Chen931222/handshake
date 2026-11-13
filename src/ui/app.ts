@@ -6,6 +6,8 @@
  */
 
 import { encodeFrame, type DecodeResult } from "../protocol/frame.js";
+import { encodeRobustFrame } from "../protocol/robust-frame.js";
+import { codedLength } from "../protocol/fec.js";
 import { modulate } from "../modem/modulator.js";
 import { toneClarity } from "../modem/clarity.js";
 import { defaultConfig, type ModemConfig } from "../modem/config.js";
@@ -22,7 +24,7 @@ type Role = "send" | "listen";
 type Path = "acoustic" | "simulated";
 
 const MAX_BYTES = 140;
-const FRAME_OVERHEAD = 9; // 4 preamble + 2 sync + 1 length + 2 CRC
+const robustBox = document.getElementById("robust") as HTMLInputElement;
 const enc = new TextEncoder();
 const dec = new TextDecoder("utf-8", { fatal: false });
 
@@ -65,13 +67,24 @@ function bytes(): Uint8Array {
   return enc.encode(message.value);
 }
 
-function airSeconds(payloadBytes: number, config: ModemConfig = state.config): number {
-  return ((payloadBytes + FRAME_OVERHEAD) * 8) / config.baudRate;
+/** The frame as it goes on the air, part by part, in bits. */
+function frameParts(payloadBytes: number, robust: boolean): view.AirPart[] {
+  if (!robust) {
+    return [["Preamble", 32], ["Sync", 16], ["Length", 8], ["Message", 8 * payloadBytes], ["Check", 16]];
+  }
+  const head = 32 + 16 + codedLength(8);
+  const body = codedLength(8 * (payloadBytes + 2));
+  const pad = (8 - ((head + body) % 8)) % 8;
+  return [["Preamble", 32], ["Sync", 16], ["Length, coded", codedLength(8)], ["Message + check, coded", body + pad]];
+}
+
+function airSeconds(payloadBytes: number, robust: boolean, config: ModemConfig = state.config): number {
+  return frameParts(payloadBytes, robust).reduce((s, [, b]) => s + b, 0) / config.baudRate;
 }
 
 function refreshComposer(): void {
   const n = bytes().length;
-  view.setByteCount(n, MAX_BYTES, n > 0 ? airSeconds(n) : 0);
+  view.setByteCount(n, MAX_BYTES, n > 0 ? airSeconds(n, robustBox.checked) : 0);
   sendBtn.disabled = state.sending || n === 0 || n > MAX_BYTES;
 }
 
@@ -99,17 +112,20 @@ async function send(): Promise<void> {
   state.sending = true;
   refreshComposer();
   try {
+    const robust = robustBox.checked;
+    const parts = frameParts(payload.length, robust);
     if (state.path === "acoustic") {
       const ctx = await audio();
-      const samples = modulate(encodeFrame(payload), state.config);
+      const samples = modulate(robust ? encodeRobustFrame(payload) : encodeFrame(payload), state.config);
       const seconds = samples.length / state.config.sampleRate;
-      view.startTransmission(payload.length + FRAME_OVERHEAD, seconds);
+      view.startTransmission(parts, state.config.baudRate, seconds);
       await play(samples, ctx);
       view.endTransmission(`Sent ${payload.length} bytes in ${seconds.toFixed(1)} s of sound.`);
     } else {
-      const seconds = broadcastSend(payload, { config: state.config });
+      const seconds = broadcastSend(payload, { config: state.config, robust });
       view.flashTransmission(
-        payload.length + FRAME_OVERHEAD,
+        parts,
+        state.config.baudRate,
         seconds,
         `Posted to the other tab. As sound this would take ${seconds.toFixed(1)} s.`,
       );
@@ -138,12 +154,12 @@ function startSimulatedListen(): void {
   // broadcastListen applies the impairments itself; we also measure clarity on our own copy.
   state.stopSim = broadcastListen(
     { config: state.config, channelOptions: opts() },
-    ({ result, sentAt, audioSeconds, clarity }) => {
+    ({ result, sentAt, audioSeconds, clarity, mode }) => {
       const latency = Math.max(0, Date.now() - sentAt);
       view.setClarity(clarity);
       show(
         result,
-        `${opts().snrDb} dB · ${opts().clockDriftPpm} ppm · ${audioSeconds.toFixed(1)} s as sound · arrived ${latency} ms after Send`,
+        `${mode === "robust" ? "error-corrected · " : ""}${opts().snrDb} dB · ${opts().clockDriftPpm} ppm · ${audioSeconds.toFixed(1)} s as sound · arrived ${latency} ms after Send`,
       );
     },
   );
@@ -167,8 +183,8 @@ async function startAcousticListen(): Promise<void> {
   });
   rx.on("constraint-report", (r) => view.constraints(r));
   rx.on("signal-level", ({ rms, clarity }) => view.setLevel(rms, clarity));
-  rx.on("payload", ({ payload, frameSeconds }) =>
-    show({ ok: true, payload }, `${frameSeconds.toFixed(1)} s of sound · decoded from the microphone`),
+  rx.on("payload", ({ payload, frameSeconds, mode }) =>
+    show({ ok: true, payload }, `${mode === "robust" ? "error-corrected · " : ""}${frameSeconds.toFixed(1)} s of sound · decoded from the microphone`),
   );
   view.setListening(true);
   await rx.start(ctx);
@@ -182,6 +198,7 @@ document.querySelectorAll<HTMLInputElement>('input[name="path"]').forEach((el) =
   el.addEventListener("change", () => setMode(state.role, el.value as Path)),
 );
 message.addEventListener("input", refreshComposer);
+robustBox.addEventListener("change", refreshComposer);
 sendBtn.addEventListener("click", () => void send());
 listenBtn.addEventListener("click", () => {
   if (state.rx || state.stopSim) stopListening();

@@ -790,3 +790,28 @@ main > * {
 .log > * {
   min-width: 0;
 }
+
+.check {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  transform: translateY(3px);
+}
+
+.check-note {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+  margin-left: var(--space-2);
+}
+
+.air-key dd {
+  white-space: nowrap;
+}
