@@ -10,7 +10,7 @@ import { receiveAny, type FrameMode } from "../modem/any-receiver.js";
 import { robustAirSeconds } from "../protocol/robust-frame.js";
 import type { ModemConfig } from "../modem/config.js";
 import { RingBuffer } from "../util/ring-buffer.js";
-import { configForSampleRate, rxBufferCapacity } from "./rate-config.js";
+import { configForSampleRate, listenConfigs, rxBufferCapacity } from "./rate-config.js";
 import { loadWorklet } from "./audio-tx.js";
 import { toneClarity } from "../modem/clarity.js";
 
@@ -30,7 +30,7 @@ export type ConstraintReport = Record<
 >;
 
 export interface RxEventMap {
-  payload: { payload: Uint8Array; frameSeconds: number; mode: FrameMode };
+  payload: { payload: Uint8Array; frameSeconds: number; mode: FrameMode; baud: number };
   error: { reason: string };
   "constraint-report": ConstraintReport;
   /** rms of the latest block; clarity = tone share over the last 4 symbols, 0..1 */
@@ -64,6 +64,18 @@ export class AudioRx {
   private stream: MediaStream | null = null;
   private running = false;
   private lastLevelAt = -Infinity;
+  /** Adaptive throttle: after a decode that took T ms, wait 4T before the next (keeps CPU near 20%). */
+  private nextDecodeAt = -Infinity;
+  private decodedLength = -1;
+  /**
+   * End-of-transmission detection. While the tones are clearly present we count samples since the
+   * transmission began; when it has been quiet for QUIET_MS we decode just that stretch (plus a
+   * margin). That decode is small and fast, and the buffer can be cleared safely because the next
+   * message has not started. The periodic full-buffer decode in poll() stays as a fallback.
+   */
+  private toneOn = false;
+  private toneSamples = 0;
+  private quietSince = -Infinity;
   /** Exposed for tests and the UI. */
   buffer: RingBuffer | null = null;
   private recent: RingBuffer | null = null;
@@ -145,23 +157,63 @@ export class AudioRx {
       for (let i = 0; i < chunk.length; i++) sum += chunk[i]! * chunk[i]!;
       const clarity = this.recent && this.config ? toneClarity(this.recent.read(), this.config) : 0;
       this.emit("signal-level", { rms: Math.sqrt(sum / Math.max(1, chunk.length)), clarity });
+      this.trackTone(clarity, now);
     }
+    if (this.toneOn) this.toneSamples += chunk.length;
+  }
+
+  private trackTone(clarity: number, now: number): void {
+    const ON = 0.3; // tone share that counts as "a transmission is on the air"
+    const OFF = 0.15;
+    const QUIET_MS = 400;
+    if (clarity >= ON) {
+      if (!this.toneOn) this.toneSamples = 0;
+      this.toneOn = true;
+      this.quietSince = -Infinity;
+      return;
+    }
+    if (!this.toneOn || clarity > OFF) return;
+    if (this.quietSince === -Infinity) this.quietSince = now;
+    if (now - this.quietSince < QUIET_MS) return;
+    this.toneOn = false;
+    this.quietSince = -Infinity;
+    this.decodeTail(this.toneSamples);
+  }
+
+  /** Decodes only the most recent transmission: its length plus one second of margin on each side. */
+  private decodeTail(toneSamples: number): void {
+    if (!this.buffer || !this.config) return;
+    const all = this.buffer.read();
+    const take = Math.min(all.length, toneSamples + 2 * this.config.sampleRate);
+    const { result, mode, config } = receiveAny(all.subarray(all.length - take), this.config, listenConfigs(this.config));
+    if (result.ok) this.deliver(result.payload, mode, config);
+  }
+
+  private deliver(payload: Uint8Array, mode: FrameMode, config: ModemConfig): void {
+    const n = payload.length;
+    this.emit("payload", {
+      payload,
+      frameSeconds: mode === "robust" ? robustAirSeconds(n, config) : ((n + 9) * 8) / config.baudRate,
+      mode,
+      baud: config.baudRate,
+    });
+    this.buffer?.clear();
+    this.decodedLength = -1;
   }
 
   /** One decode attempt over everything buffered. */
   poll(): void {
     if (!this.running || !this.buffer || !this.config) return;
     if (this.buffer.length === 0) return;
-    const { result, mode } = receiveAny(this.buffer.read(), this.config);
-    if (result.ok) {
-      const n = result.payload.length;
-      this.emit("payload", {
-        payload: result.payload,
-        frameSeconds: mode === "robust" ? robustAirSeconds(n, this.config) : ((n + 9) * 8) / this.config.baudRate,
-        mode,
-      });
-      this.buffer.clear();
-    }
+    const clock = this.options.now ?? (() => performance.now());
+    const t0 = clock();
+    if (t0 < this.nextDecodeAt) return;
+    // Nothing new since the last full attempt (a ring buffer that stopped growing): skip.
+    if (this.buffer.length === this.decodedLength && this.buffer.length < this.buffer.capacity) return;
+    const { result, mode, config } = receiveAny(this.buffer.read(), this.config, listenConfigs(this.config));
+    this.decodedLength = this.buffer.length;
+    this.nextDecodeAt = clock() + 4 * Math.max(0, clock() - t0);
+    if (result.ok) this.deliver(result.payload, mode, config);
   }
 
   stop(): void {

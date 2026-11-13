@@ -30,6 +30,7 @@ After the April 2024 Hualien earthquake, 172 mobile base stations went offline, 
 - Measured on the simulated channel: 50 of 50 messages decode down to −10 dB SNR, 8 of 50 at −15 dB, 0 of 50 at −20 dB.
 - Verified in a real browser through the full Web Audio path (worklet out → worklet in) at both 48 kHz and 44.1 kHz.
 - First real over-the-air test on one desktop failed (0 of 10 at 100 baud): bits arrived with 2–9% errors because the speaker was too quiet at the mic. The checksum rejected every damaged frame. That failure drove slice 3.
+- **Over the air, working:** after raising the speaker volume, the same desktop setup decoded 5 of 5 messages in the new "Robust, slow" mode (error correction at 50 baud) through the real Send and Listen screens, each on screen within a second of its sound ending, with no wrong message accepted. Fast mode got 0 of 5 in the same room. Phones are not measured yet.
 - Slice 3, error correction: a rate-1/2, K=7 convolutional code with soft-decision Viterbi and an interleaver, plus a sync search that tolerates 2 wrong bits. On the simulated channel, at the same seconds of sound, it beats simply slowing down by about 3 dB (−18 dB: 62/100 vs 11/100). Listeners detect the mode on their own.
 
 ### What's next

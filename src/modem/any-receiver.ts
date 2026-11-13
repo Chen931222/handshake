@@ -19,6 +19,8 @@ export interface AnyResult {
   result: DecodeResult;
   /** Which decoder produced `result` (the successful one, or the more informative failure). */
   mode: FrameMode;
+  /** The rate it was decoded at. */
+  config: ModemConfig;
 }
 
 function rank(r: DecodeResult): number {
@@ -26,11 +28,27 @@ function rank(r: DecodeResult): number {
   return r.reason === "crc_mismatch" ? 2 : r.reason === "bad_length" ? 1 : 0;
 }
 
-export function receiveAny(samples: Float32Array, config: ModemConfig): AnyResult {
+function atRate(samples: Float32Array, config: ModemConfig): AnyResult {
   const opts = { maxSyncErrors: SYNC_TOLERANCE };
   const normal = receive(samples, config, opts);
-  if (normal.ok) return { result: normal, mode: "normal" };
+  if (normal.ok) return { result: normal, mode: "normal", config };
   const robust = receiveRobust(samples, config, opts);
-  if (robust.ok) return { result: robust, mode: "robust" };
-  return rank(robust) > rank(normal) ? { result: robust, mode: "robust" } : { result: normal, mode: "normal" };
+  if (robust.ok) return { result: robust, mode: "robust", config };
+  return rank(robust) > rank(normal)
+    ? { result: robust, mode: "robust", config }
+    : { result: normal, mode: "normal", config };
+}
+
+/**
+ * Tries every frame format at every given rate (fastest first) and returns the first success, or
+ * the most informative failure. `configs` defaults to just `config`'s own rate.
+ */
+export function receiveAny(samples: Float32Array, config: ModemConfig, configs: ModemConfig[] = [config]): AnyResult {
+  let best: AnyResult | null = null;
+  for (const c of configs) {
+    const r = atRate(samples, c);
+    if (r.result.ok) return r;
+    if (!best || rank(r.result) > rank(best.result)) best = r;
+  }
+  return best!;
 }

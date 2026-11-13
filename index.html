@@ -36,10 +36,14 @@
         <label class="field-label" for="message">Message</label>
         <textarea id="message" rows="3" maxlength="600" spellcheck="false"
           placeholder="I'm on the 3rd-floor stairwell. Leg injured.">I'm on the 3rd-floor stairwell. Leg injured.</textarea>
-        <label class="check">
-          <input type="checkbox" id="robust" checked />
-          <span>Error correction <span class="check-note">twice the sound, survives about 3 dB more noise</span></span>
-        </label>
+        <div class="mode-row">
+          <label for="send-mode">Mode</label>
+          <select id="send-mode">
+            <option value="slow" selected>Robust, slow: best through the air</option>
+            <option value="robust">Robust: error correction at full speed</option>
+            <option value="fast">Fast: no error correction</option>
+          </select>
+        </div>
         <div class="composer-foot">
           <p class="meta" id="byte-count" aria-live="polite"></p>
           <div class="actions">

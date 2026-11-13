@@ -15,7 +15,7 @@ import { play } from "../channel/audio-tx.js";
 import { AudioRx } from "../channel/audio-rx.js";
 import { broadcastListen, broadcastSend } from "../channel/broadcast.js";
 import { simulateChannel } from "../channel/simulated.js";
-import { configForSampleRate } from "../channel/rate-config.js";
+import { configForSampleRate, slowConfig } from "../channel/rate-config.js";
 import * as view from "./view.js";
 import "@fontsource/im-fell-english/400.css";
 import "./app.css";
@@ -24,7 +24,11 @@ type Role = "send" | "listen";
 type Path = "acoustic" | "simulated";
 
 const MAX_BYTES = 140;
-const robustBox = document.getElementById("robust") as HTMLInputElement;
+const modeSelect = document.getElementById("send-mode") as HTMLSelectElement;
+type SendMode = "slow" | "robust" | "fast";
+const sendMode = () => modeSelect.value as SendMode;
+/** The rate a mode sends at: slow halves the baud (measured best over the air, 2026-11-13). */
+const modeConfig = (m: SendMode) => (m === "slow" ? slowConfig(state.config) : state.config);
 const enc = new TextEncoder();
 const dec = new TextDecoder("utf-8", { fatal: false });
 
@@ -84,7 +88,7 @@ function airSeconds(payloadBytes: number, robust: boolean, config: ModemConfig =
 
 function refreshComposer(): void {
   const n = bytes().length;
-  view.setByteCount(n, MAX_BYTES, n > 0 ? airSeconds(n, robustBox.checked) : 0);
+  view.setByteCount(n, MAX_BYTES, n > 0 ? airSeconds(n, sendMode() !== "fast", modeConfig(sendMode())) : 0);
   sendBtn.disabled = state.sending || n === 0 || n > MAX_BYTES;
 }
 
@@ -112,20 +116,23 @@ async function send(): Promise<void> {
   state.sending = true;
   refreshComposer();
   try {
-    const robust = robustBox.checked;
+    const mode = sendMode();
+    const robust = mode !== "fast";
     const parts = frameParts(payload.length, robust);
     if (state.path === "acoustic") {
       const ctx = await audio();
-      const samples = modulate(robust ? encodeRobustFrame(payload) : encodeFrame(payload), state.config);
-      const seconds = samples.length / state.config.sampleRate;
-      view.startTransmission(parts, state.config.baudRate, seconds);
+      const cfg = modeConfig(mode);
+      const samples = modulate(robust ? encodeRobustFrame(payload) : encodeFrame(payload), cfg);
+      const seconds = samples.length / cfg.sampleRate;
+      view.startTransmission(parts, cfg.baudRate, seconds);
       await play(samples, ctx);
       view.endTransmission(`Sent ${payload.length} bytes in ${seconds.toFixed(1)} s of sound.`);
     } else {
-      const seconds = broadcastSend(payload, { config: state.config, robust });
+      const cfg = modeConfig(mode);
+      const seconds = broadcastSend(payload, { config: cfg, robust });
       view.flashTransmission(
         parts,
-        state.config.baudRate,
+        cfg.baudRate,
         seconds,
         `Posted to the other tab. As sound this would take ${seconds.toFixed(1)} s.`,
       );
@@ -154,12 +161,12 @@ function startSimulatedListen(): void {
   // broadcastListen applies the impairments itself; we also measure clarity on our own copy.
   state.stopSim = broadcastListen(
     { config: state.config, channelOptions: opts() },
-    ({ result, sentAt, audioSeconds, clarity, mode }) => {
+    ({ result, sentAt, audioSeconds, clarity, mode, baud }) => {
       const latency = Math.max(0, Date.now() - sentAt);
       view.setClarity(clarity);
       show(
         result,
-        `${mode === "robust" ? "error-corrected · " : ""}${opts().snrDb} dB · ${opts().clockDriftPpm} ppm · ${audioSeconds.toFixed(1)} s as sound · arrived ${latency} ms after Send`,
+        `${mode === "robust" ? "error-corrected · " : ""}${baud} baud · ${opts().snrDb} dB · ${opts().clockDriftPpm} ppm · ${audioSeconds.toFixed(1)} s as sound · arrived ${latency} ms after Send`,
       );
     },
   );
@@ -183,8 +190,8 @@ async function startAcousticListen(): Promise<void> {
   });
   rx.on("constraint-report", (r) => view.constraints(r));
   rx.on("signal-level", ({ rms, clarity }) => view.setLevel(rms, clarity));
-  rx.on("payload", ({ payload, frameSeconds, mode }) =>
-    show({ ok: true, payload }, `${mode === "robust" ? "error-corrected · " : ""}${frameSeconds.toFixed(1)} s of sound · decoded from the microphone`),
+  rx.on("payload", ({ payload, frameSeconds, mode, baud }) =>
+    show({ ok: true, payload }, `${mode === "robust" ? "error-corrected · " : ""}${baud} baud · ${frameSeconds.toFixed(1)} s of sound · decoded from the microphone`),
   );
   view.setListening(true);
   await rx.start(ctx);
@@ -198,7 +205,7 @@ document.querySelectorAll<HTMLInputElement>('input[name="path"]').forEach((el) =
   el.addEventListener("change", () => setMode(state.role, el.value as Path)),
 );
 message.addEventListener("input", refreshComposer);
-robustBox.addEventListener("change", refreshComposer);
+modeSelect.addEventListener("change", refreshComposer);
 sendBtn.addEventListener("click", () => void send());
 listenBtn.addEventListener("click", () => {
   if (state.rx || state.stopSim) stopListening();

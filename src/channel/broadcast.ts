@@ -9,6 +9,7 @@
 import { encodeFrame, type DecodeResult } from "../protocol/frame.js";
 import { modulate } from "../modem/modulator.js";
 import { receiveAny, type FrameMode } from "../modem/any-receiver.js";
+import { listenConfigs } from "./rate-config.js";
 import { encodeRobustFrame } from "../protocol/robust-frame.js";
 import { toneClarity } from "../modem/clarity.js";
 import { simulateChannel, type ChannelOptions } from "./simulated.js";
@@ -41,6 +42,8 @@ export interface BroadcastResult {
   clarity: number;
   /** Which frame format was decoded (or failed). */
   mode: FrameMode;
+  /** Rate the listener decoded at. */
+  baud: number;
 }
 
 interface WireMessage {
@@ -77,12 +80,13 @@ export function broadcastListen(
     if (!active) return;
     const samples = new Float32Array(e.data.samples);
     const impaired = simulateChannel(samples, options.channelOptions ?? {});
-    const any = receiveAny(impaired, options.config);
+    const any = receiveAny(impaired, options.config, listenConfigs(options.config));
     onResult({
       result: any.result,
       mode: any.mode,
       sentAt: e.data.sentAt,
       audioSeconds: samples.length / options.config.sampleRate,
+      baud: any.config.baudRate,
       clarity: toneClarity(impaired, options.config),
     });
   };

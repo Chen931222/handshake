@@ -51,6 +51,17 @@ At equal sound, coding beats simply slowing down by about 3 dB. With an exact 24
 
 Why it survives 0 dB: each bit is judged by the energy in a ~100 Hz Goertzel bin over 480 samples, about 24 dB of processing gain against noise spread over 24 kHz.
 
+**Over the air, working (2026-11-13, same desktop: Realtek speakers → HyperX SoloCast USB mic, distance not measured, the speaker volume higher than in the first test; the tone arrived 34 dB above the room):**
+
+| Mode | Decoded | Wrong messages accepted | Sound per message |
+|---|---|---|---|
+| Fast (no error correction), 100 baud | 0 / 5 | 0 | 2.7 s |
+| Robust, 100 baud | 2 / 5 | 0 | 5.0 s |
+| Robust, slow, 50 baud (direct test) | 5 / 5 | 0 | 8.5 s |
+| Robust, slow, 50 baud, through the real Send and Listen screens | 5 / 5 | 0 | 12.7 s |
+
+In the last row each message was on screen 0.5 to 1 s after its sound ended. "Robust, slow" is now the default mode; listeners try 100 and 50 baud on their own. One desktop and one room only; phones are not measured yet.
+
 **First over-the-air test (2026-11-13, one desktop: Realtek speakers → HyperX SoloCast USB mic, same desk, distance not measured):** 0 of 10 messages decoded at 100 baud, 0 of 5 at 50 baud, 1 of 5 at 25 baud. The browser honored all three "off" requests (echo cancellation, noise suppression, auto gain). A steady 2400 Hz tone reached the mic at about −80 dBFS, 13 dB above the room. Aligning the received audio with what was sent shows 2–9% of bits wrong, scattered rather than bunched after tone changes, so the link is short of signal rather than smeared by echo; a 300-bit frame almost never arrives clean, and the checksum rejects it, as designed. Next: louder and closer, real phones, and error correction.
 
 **Not measured yet: real phones.** The device × environment table lives in `measurements/field.csv`. It is empty until someone runs real tests. Rows are never estimated.

@@ -815,3 +815,25 @@ main > * {
 .air-key dd {
   white-space: nowrap;
 }
+
+.mode-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.mode-row label {
+  color: var(--ink-2);
+  font-size: 0.875rem;
+}
+
+.mode-row select {
+  min-height: 44px;
+  font: 1rem/1.4 var(--ui);
+  color: var(--ink);
+  background: var(--ground-sunk);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius);
+  padding: 0 var(--space-3);
+}

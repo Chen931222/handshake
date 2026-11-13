@@ -91,9 +91,11 @@ describe("configForSampleRate", () => {
     expect(warn).toHaveBeenCalledOnce();
   });
 
-  it("sizes the receive buffer for the longest frame plus one second", () => {
+  it("sizes the receive buffer for the longest frame at the slowest rate plus one second", () => {
     const c = configForSampleRate(44100, () => {});
-    expect(rxBufferCapacity(c)).toBe(Math.ceil(44100 * (149 * 8 / 100)) + 44100);
+    // Longest case: a robust 140-byte frame at the slow rate (50 baud): 48 + 28 + 2×(1136 + 6) bits, byte-padded.
+    const robustBits = Math.ceil((48 + 28 + 2 * (8 * 142 + 6)) / 8) * 8;
+    expect(rxBufferCapacity(c)).toBe(Math.ceil(44100 * (robustBits / 50)) + 44100);
   });
 });
 
@@ -305,6 +307,32 @@ describe("AudioRx", () => {
     // 100 blocks over ~270 ms → at most 4 events at an 80 ms gap
     expect(level.mock.calls.length).toBeLessThanOrEqual(4);
     expect(level.mock.calls[0]![0].rms).toBeCloseTo(0.5, 5);
+    rx.stop();
+  });
+
+  it("decodes a transmission as soon as it ends, without waiting for a poll", async () => {
+    let t = 0;
+    const env = fakeEnv();
+    const rx = new AudioRx({
+      getUserMedia: env.getUserMedia,
+      isSecureContext: () => true,
+      createCaptureNode: async () => env.node,
+      pollIntervalMs: 1e9, // the periodic poll never fires in this test
+      now: () => t,
+    });
+    const got = vi.fn();
+    rx.on("payload", got);
+    await rx.start(env.ctx);
+    const payload = new TextEncoder().encode("Stairwell 3F");
+    const samples = modulate(encodeFrame(payload), defaultConfig);
+    const all = new Float32Array(4800 + samples.length + 48000); // 0.1 s lead, 1 s of silence after
+    all.set(samples, 4800);
+    for (let i = 0; i < all.length; i += 128) {
+      t += (128 / 48000) * 1000; // real time per render quantum
+      env.node.port.onmessage!({ data: { chunk: all.slice(i, i + 128) } });
+    }
+    expect(got).toHaveBeenCalledTimes(1);
+    expect(new TextDecoder().decode(got.mock.calls[0]![0].payload)).toBe("Stairwell 3F");
     rx.stop();
   });
 
