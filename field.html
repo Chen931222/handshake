@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="./icon.svg" type="image/svg+xml" />
+    <title>Field log · Handshake</title>
+  </head>
+  <body>
+    <header class="masthead">
+      <div class="brand">
+        <h1>Field log</h1>
+        <p>One row per real run: which devices, where, how far, how many got through.</p>
+      </div>
+      <nav class="page-nav" aria-label="Pages"><a href="./">Board</a><a href="./lab.html">Lab</a></nav>
+    </header>
+    <main>
+      <form id="field-form" class="field-form" novalidate>
+        <div class="f"><label for="f-date">Date</label><input id="f-date" name="date" type="date" required /><p class="err" id="err-date"></p></div>
+        <div class="f"><label for="f-tx">Sending device</label><input id="f-tx" name="tx_device" placeholder="Pixel 7, Chrome" required /><p class="err" id="err-tx_device"></p></div>
+        <div class="f"><label for="f-rx">Listening device</label><input id="f-rx" name="rx_device" placeholder="iPhone 13, Safari" required /><p class="err" id="err-rx_device"></p></div>
+        <div class="f"><label for="f-env">Environment</label><input id="f-env" name="environment" placeholder="quiet room, café, street" required /><p class="err" id="err-environment"></p></div>
+        <div class="f"><label for="f-dist">Distance (m)</label><input id="f-dist" name="distance_m" inputmode="decimal" placeholder="1" required /><p class="err" id="err-distance_m"></p></div>
+        <div class="f"><label for="f-bytes">Message bytes</label><input id="f-bytes" name="payload_bytes" inputmode="numeric" placeholder="40" required /><p class="err" id="err-payload_bytes"></p></div>
+        <div class="f"><label for="f-att">Attempts</label><input id="f-att" name="attempts" inputmode="numeric" placeholder="10" required /><p class="err" id="err-attempts"></p></div>
+        <div class="f"><label for="f-ok">Decoded</label><input id="f-ok" name="successes" inputmode="numeric" placeholder="9" required /><p class="err" id="err-successes"></p></div>
+        <div class="f f-wide"><label for="f-notes">Notes (optional)</label><input id="f-notes" name="notes" placeholder="volume 80%, phone face up" /><p class="err" id="err-notes"></p></div>
+        <div class="f-actions"><button type="submit" class="primary">Add row</button></div>
+      </form>
+
+      <section class="log" aria-labelledby="log-title">
+        <div class="air-head">
+          <h2 id="log-title">Runs</h2>
+          <button type="button" class="quiet" id="field-download">Download CSV</button>
+        </div>
+        <p class="meta" id="field-summary"></p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Date</th><th>Sender</th><th>Listener</th><th>Where</th><th class="num">m</th><th class="num">Bytes</th><th class="num">Tries</th><th class="num">OK</th><th>Notes</th><th><span class="sr-only">Actions</span></th></tr></thead>
+            <tbody id="field-rows"></tbody>
+          </table>
+        </div>
+        <p class="hint" id="field-empty">Saved in this browser only. Download the CSV and add it to <code>measurements/field.csv</code>.</p>
+      </section>
+    </main>
+    <script type="module" src="./src/ui/field.ts"></script>
+  </body>
+</html>

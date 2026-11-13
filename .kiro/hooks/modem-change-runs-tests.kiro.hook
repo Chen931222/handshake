@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "Modem change: run property tests and SNR report",
+  "description": "When modem, protocol or channel code changes, run the full Vitest suite (including the fast-check properties and the SNR sweep) and update the success-rate table in README.md from the printed report. Never edit the numbers by hand.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["src/modem/**/*.ts", "src/protocol/**/*.ts", "src/channel/simulated.ts"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A modem, protocol or channel file changed. Run `npx vitest run`. If any test fails, stop and report the failing property and its counterexample. If all pass, copy the SNR sweep table printed by test/noise.test.ts into the 'Measured on the simulated channel' table in README.md, replacing the old rows, and note the date. Do not change any number that the test did not print."
+  }
+}

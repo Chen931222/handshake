@@ -1,0 +1,11 @@
+{
+  "name": "Handshake",
+  "short_name": "Handshake",
+  "description": "Send a short message between two devices with sound. No network.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#16110c",
+  "theme_color": "#16110c",
+  "icons": [{ "src": "./icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

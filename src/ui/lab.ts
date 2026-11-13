@@ -9,11 +9,11 @@
  * No external libraries, no network requests, no séance styling.
  */
 
-import { defaultConfig } from "./modem/config.js";
-import { encodeFrame } from "./protocol/frame.js";
-import { modulate } from "./modem/modulator.js";
-import { simulateChannel } from "./channel/simulated.js";
-import { receive } from "./modem/receiver.js";
+import { defaultConfig } from "../modem/config.js";
+import { encodeFrame } from "../protocol/frame.js";
+import { modulate } from "../modem/modulator.js";
+import { simulateChannel } from "../channel/simulated.js";
+import { receive } from "../modem/receiver.js";
 
 const enc = new TextEncoder();
 

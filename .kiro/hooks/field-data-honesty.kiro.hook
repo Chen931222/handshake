@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "name": "Field measurements: real rows only",
+  "description": "When a field-measurement CSV changes, check its columns and flag any row that looks invented.",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["measurements/**/*.csv"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A field-measurement CSV changed. Check that the header is exactly `date,tx_device,rx_device,environment,distance_m,payload_bytes,attempts,successes,notes`, that successes <= attempts on every row, and that payload_bytes is 1-140. Do not add, remove or 'fix' rows: these are real measurements typed in by a person. Report problems only. Then regenerate the device x environment table in README.md from the CSV."
+  }
+}

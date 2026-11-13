@@ -1,0 +1,67 @@
+{
+  "title": "Handshake's visual world",
+  "question": "The roll assigned 'The Talking Board'. Keep it, take an alternate, or re-roll. Whichever you choose, it only lends type, color, density, and one signature move; buttons and inputs stay standard web controls.",
+  "options": [
+    {
+      "id": "assigned",
+      "kind": "assigned",
+      "label": "The Talking Board",
+      "kicker": "THE ROLL",
+      "lineage": "1890s American spirit boards: engraved alphabet, YES / NO / GOOD BYE, and a heart-shaped planchette with a glass lens",
+      "thesis": "The decoded text appears letter by letter under the planchette lens; the lens's clarity is the live signal strength.",
+      "palette": ["#16110c", "#efe4cf", "#b8862f"],
+      "materials": ["walnut-black ground", "bone-white engraved type", "one aged-brass accent"],
+      "viewport": "Top bar: Send/Listen and Acoustic/Simulated as standard tab groups. Main area: the message input with a byte counter (n/140) and the Send button. Below it, one horizontal transmission timeline where each byte's block length is its actual on-air duration. Result area: a received message shows letter by letter under the planchette lens; a failure has the planchette drift to GOOD BYE, with the actual reason in small type (no_sync / crc_mismatch).",
+      "risk": "The most literal reading of 'séance'. If the engraving and wood grain are overdone, it turns into a Halloween costume. The world only lends type, color, and the one lens move; drop it if it starts blocking the controls.",
+      "raised": [
+        {"from": "notation-diagram-systems-labanotation", "raise": "Time is drawn to scale: each byte's block length = its actual 80 ms, so the full 12-second message is visible at a glance."},
+        {"from": "vernacular-ephemera-cassette-j-card", "raise": "Every message shows its exact transmission seconds, right-aligned, like a track timing."},
+        {"from": "wayfinding-cartography-signage-terminal-yellow-wayfinding", "raise": "At any moment the screen makes only the next action largest: type → send → wait → read."},
+        {"from": "digital-design-canon-metro-typographic-tiles", "raise": "The shell commits to the walnut ground and bone-white ink; no gray default background."},
+        {"from": "pop-culture-shelf-vertical-video-feed-surface", "raise": "When a message arrives, it alone owns the result area; nothing competes with it."}
+      ]
+    },
+    {
+      "id": "model-pick",
+      "kind": "pick",
+      "label": "Temple Fortune Slip",
+      "kicker": "IMPECCABLE’S PICK",
+      "lineage": "Taiwanese temple fortune slips: numbered paper slips, woodblock type, red paper with black ink",
+      "thesis": "Each received message is a numbered fortune slip; a failed decode is 'no answer', like a divination-block toss that refuses to settle.",
+      "palette": ["#f1e6cf", "#1d1a16", "#b3261e"],
+      "materials": ["rice-paper ground", "woodblock Song type", "one vermilion accent"],
+      "viewport": "Same shell as above. The result area becomes a narrow vertical slip: number (No. 7), body text, and transmission seconds; on failure the slip is blank with the reason stamped in.",
+      "risk": "Highly local: judges may not know the ritual, so a one-line explanation is needed. The vertical slip constrains Latin-text layout."
+    },
+    {
+      "id": "challenger-exposure",
+      "kind": "challenger",
+      "catalogId": "operate-b-exposure-record-zone-sheets",
+      "label": "Darkroom Exposure Record",
+      "verdict": "competitive",
+      "lineage": "darkroom enlarging records: an 11-step gray scale with hatching",
+      "thesis": "Signal strength mapped onto a fixed 11-step tonal scale: −25 to 40 dB, each step one gray value.",
+      "palette": ["#0f0f0f", "#8a8a8a", "#e9e9e9", "#c2185b"],
+      "materials": ["backlit translucent sheets", "hatching"],
+      "viewport": "The SNR slider becomes an 11-step tonal ramp; the received text sits on the light region, and as signal fades the hatching gets denser.",
+      "case": "Holds product clarity (signal strength visible at a glance), but loses audience identification: it reads as a darkroom tool, not a séance.",
+      "risk": "The strongest functionally but the coldest; it nearly drops the séance story steering asks for."
+    },
+    {"id": "challenger-metro", "kind": "challenger", "catalogId": "digital-design-canon-metro-typographic-tiles", "label": "Metro Tiles", "verdict": "declined", "lineage": "flat Metro-style tiles", "palette": ["#000000", "#00aba9"], "materials": ["flat tiles"], "case": "Loses on both axes: no séance, and tiles don't fit a send/receive flow.", "kept": "Total color commitment: the shell has no gray default."},
+    {"id": "challenger-feed", "kind": "challenger", "catalogId": "pop-culture-shelf-vertical-video-feed-surface", "label": "Vertical Video Feed", "verdict": "declined", "lineage": "vertical short-video feed", "palette": ["#000000", "#ffffff"], "materials": ["full-screen media"], "case": "Loses on both axes: messages aren't media.", "kept": "When something arrives it alone owns the stage."},
+    {"id": "challenger-jcard", "kind": "challenger", "catalogId": "vernacular-ephemera-cassette-j-card", "label": "Cassette J-Card", "verdict": "declined", "lineage": "hand-written cassette inserts", "palette": ["#ffffff", "#1f3fa6", "#d62b2b"], "materials": ["ballpoint", "lined card stock"], "case": "Loses on both axes.", "kept": "Exact running time for each item, right-aligned."},
+    {"id": "challenger-laban", "kind": "challenger", "catalogId": "notation-diagram-systems-labanotation", "label": "Labanotation", "verdict": "declined", "lineage": "dance notation", "palette": ["#ffffff", "#000000"], "materials": ["score paper"], "case": "Loses on both axes.", "kept": "Duration drawn to scale."},
+    {"id": "challenger-airport", "kind": "challenger", "catalogId": "wayfinding-cartography-signage-terminal-yellow-wayfinding", "label": "Airport Wayfinding", "verdict": "declined", "lineage": "airport yellow signage", "palette": ["#ffd100", "#000000"], "materials": ["sign panels"], "case": "Loses on both axes.", "kept": "Show only the next decision, at the largest size."}
+  ],
+  "reroll": {"registers": ["safer", "bolder"]},
+  "canon": true,
+  "canonCard": {
+    "kind": "canon",
+    "label": "Standard utility tool",
+    "thesis": "A clean, plain utility like a web audio tool: white background, sans-serif, one blue accent, done.",
+    "palette": ["#ffffff", "#111827", "#2563eb"],
+    "materials": ["clean grid"],
+    "viewport": "Standard form: input, send button, result card.",
+    "risk": "Drops the séance story steering requires."
+  }
+}

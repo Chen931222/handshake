@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Handshake — simulated round-trip</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+      body {
+        font-family: system-ui, sans-serif;
+        font-size: 15px;
+        line-height: 1.5;
+        background: #f5f5f5;
+        color: #1a1a1a;
+        display: flex;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
+
+      main {
+        background: #fff;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        padding: 1.5rem;
+        width: 100%;
+        max-width: 540px;
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      h1 { font-size: 1.1rem; font-weight: 600; }
+
+      .field { display: flex; flex-direction: column; gap: 0.3rem; }
+      label { font-size: 0.85rem; font-weight: 500; color: #555; }
+
+      textarea {
+        width: 100%;
+        height: 80px;
+        padding: 0.4rem 0.5rem;
+        font-size: 0.95rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+        font-family: inherit;
+      }
+
+      #byte-counter {
+        font-size: 0.8rem;
+        color: #777;
+        align-self: flex-end;
+      }
+      #byte-counter.over-limit { color: #c0392b; font-weight: 600; }
+
+      select {
+        padding: 0.35rem 0.5rem;
+        font-size: 0.95rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        width: 160px;
+      }
+
+      button {
+        align-self: flex-start;
+        padding: 0.45rem 1.1rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        background: #2563eb;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:disabled { background: #93c5fd; cursor: not-allowed; }
+      button:not(:disabled):hover { background: #1d4ed8; }
+
+      #result-box {
+        min-height: 4rem;
+        padding: 0.75rem;
+        background: #f9f9f9;
+        border: 1px solid #e0e0e0;
+        border-radius: 4px;
+        font-size: 0.9rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.3rem;
+      }
+
+      .status { font-weight: 600; }
+      .status.ok   { color: #16a34a; }
+      .status.fail { color: #c0392b; }
+      .decoded { font-family: monospace; word-break: break-all; }
+      .reason  { font-family: monospace; color: #c0392b; }
+      .meta    { font-size: 0.8rem; color: #777; margin-top: 0.2rem; }
+
+      .note {
+        font-size: 0.78rem;
+        color: #888;
+        border-top: 1px solid #eee;
+        padding-top: 0.75rem;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Handshake — simulated round-trip</h1>
+
+      <div class="field">
+        <label for="message-input">Message</label>
+        <textarea
+          id="message-input"
+          placeholder="Type a message (up to 140 UTF-8 bytes)…"
+          autocomplete="off"
+          spellcheck="false"
+        ></textarea>
+        <span id="byte-counter">0 / 140 bytes</span>
+      </div>
+
+      <div class="field">
+        <label for="snr-select">Simulated SNR</label>
+        <select id="snr-select">
+          <option value="Infinity">∞ dB (no noise)</option>
+          <option value="30">30 dB</option>
+          <option value="20" selected>20 dB</option>
+          <option value="10">10 dB</option>
+          <option value="5">5 dB</option>
+          <option value="0">0 dB</option>
+          <option value="-10">−10 dB</option>
+          <option value="-15">−15 dB (about 1 in 3 decodes)</option>
+          <option value="-20">−20 dB (fails)</option>
+        </select>
+      </div>
+
+      <button id="send-button" disabled>Send (simulated)</button>
+
+      <div id="result-box">
+        <p style="color:#aaa;font-size:0.85rem;">Result will appear here.</p>
+      </div>
+
+      <p class="note">
+        Pipeline: UTF-8 encode → frame (preamble + sync + CRC-16) → FSK modulate →
+        simulated channel (gain jitter + clock drift + white noise) → bit-granularity
+        frame acquisition → decode.<br>
+        No microphone used. All processing runs locally in this page.
+      </p>
+    </main>
+
+    <script type="module" src="./src/ui/lab.ts"></script>
+  </body>
+</html>
